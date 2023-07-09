@@ -4,7 +4,7 @@ import cv2.aruco as aruco
 import cv2
 import pickle
 import numpy as np
-import matplotlib
+#import matplotlib
 
 ##-----------------------------------------------------------------------------------------#
 ## CONSTANT VALUES
@@ -63,12 +63,17 @@ def handle_client(conn , addr):
             elif msg_type == np.ndarray: ## if list turn into and show image
                 #print(np.shape(msg))
 
-                aruco_dict = aruco.PredefinedDictionaryType(aruco.DICT_4X4_100)
-                parameters = aruco.DetectorParameters_create()
-                corners, ids, rejectedImgPoints = aruco.detectMarkers(msg,aruco_dict,parameters=parameters)
-                if len(ids) == 0:
+                aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
+                parameters = aruco.DetectorParameters()
+                detector = aruco.ArucoDetector(aruco_dict,parameters)
+                corners, ids, rejectedImgPoints = detector.detectMarkers(image=msg)
+                print(type(ids))
+                print("\n{}".format(ids))
+                if ids == None:
                     cv2.imshow("RECIVEDVIDEO", msg)
                 else:
+                    for id in ids:
+                        print("[DETECED MARKER]: {}\n".format(id))
                     editedFrame = aruco.drawDetectedMarkers(image=msg.copy(),corners=corners,ids=ids)
                     cv2.imshow("RECIEVEDVIDEO",editedFrame)
 
