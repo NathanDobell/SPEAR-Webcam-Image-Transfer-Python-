@@ -1,5 +1,6 @@
 import socket
 import threading
+import cv2.aruco as aruco
 import cv2
 import pickle
 import numpy as np
@@ -60,8 +61,17 @@ def handle_client(conn , addr):
                 else: 
                     print(f'[CLIENT {addr}] {msg}')
             elif msg_type == np.ndarray: ## if list turn into and show image
-                print(np.shape(msg))
-                cv2.imshow("RECIVEDVIDEO", msg)
+                #print(np.shape(msg))
+
+                aruco_dict = aruco.PredefinedDictionaryType(aruco.DICT_4X4_100)
+                parameters = aruco.DetectorParameters_create()
+                corners, ids, rejectedImgPoints = aruco.detectMarkers(msg,aruco_dict,parameters=parameters)
+                if len(ids) == 0:
+                    cv2.imshow("RECIVEDVIDEO", msg)
+                else:
+                    editedFrame = aruco.drawDetectedMarkers(image=msg.copy(),corners=corners,ids=ids)
+                    cv2.imshow("RECIEVEDVIDEO",editedFrame)
+
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'): ## if q is pressed disconnect
                     connected = False

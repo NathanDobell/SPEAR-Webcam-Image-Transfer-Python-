@@ -7,8 +7,8 @@ import matplotlib
 ##-----------------------------------------------------------------------------------------#
 ## CONSTANT VALUES
 PORT   = 7505
-SERVER = '10.0.0.145' ## ez adress switch
-SERVER = '10.0.0.43' 
+#SERVER = '10.0.0.145' ## ez adress switch
+SERVER = '10.0.0.43'
 ADDR   = (SERVER , PORT) ## basic informaton for contacting server
 HEADER = 16 ## How big the header is on the incoming info
 BUFFER = 100000 ## How many chars can be recived in one go
