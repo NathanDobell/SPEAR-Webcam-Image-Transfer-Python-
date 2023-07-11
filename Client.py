@@ -7,13 +7,14 @@ import numpy as np
 ##-----------------------------------------------------------------------------------------#
 ## CONSTANT VALUES
 PORT   = 7505
-#SERVER = '10.0.0.145' ## ez adress switch
-SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = '10.0.0.43' ## ez adress switch
+#SERVER = socket.gethostbyname(socket.gethostname())
 ADDR   = (SERVER , PORT) ## basic informaton for contacting server
 HEADER = 16 ## How big the header is on the incoming info
-BUFFER = 100000 ## How many chars can be recived in one go
 FORMAT = 'utf-8' ## Format of the bytes used
 DISMES = '!END' ## Message to disconnect from server
+JPEGQUALITY = 25 ## Quality of image outgoing 0-100
+ENCODEPARAM = [int(cv2.IMWRITE_JPEG_QUALITY), JPEGQUALITY]
 
 SD  = (480  , 640 )
 HD  = (720  , 1280)
@@ -33,7 +34,14 @@ def start():
     client.connect(ADDR)
     print(f'[CLIENT] CONNECTED TO {SERVER}, {PORT}')
     camera = cam_set(CAMID, REZ, client)
-    video_send(camera , client)
+    try:
+        video_send(camera , client)
+    except Exception as ext:
+        print('[CLIENT] ERROR, DISCONNECTING')
+        print(ext)
+        sendData(client, 'ERROR OCURRED')
+        sendData(client, DISMES)
+        client.close()
 
 
 
@@ -55,7 +63,8 @@ def video_send(camera , client):
     while camera.isOpened():
         img, frame = camera.read()
         if img == True:
-            sendData(client, frame)            
+            frame = cv2.imencode('.jpg', frame, ENCODEPARAM)[1].tobytes()
+            sendData(client, frame)           
 
 
 ##-----------------------------------------------------------------------------------------#
@@ -66,5 +75,7 @@ def sendData(client , msg):
     msg_len += b' ' * (HEADER - len(msg_len))
     client.send(msg_len)
     client.send(msg)
+
+
 
 start()

@@ -12,7 +12,6 @@ PORT   = 7505
 SERVER = socket.gethostbyname(socket.gethostname()) 
 ADDR   = (SERVER , PORT) ## basic informaton for contacting server
 HEADER = 16 ## How big the header is on the incoming info
-BUFFER = 100000 ## How many chars can be recived in one go
 FORMAT = 'utf-8' ## Format of the bytes used
 DISMES = '!END' ## Message to disconnect from server
 
@@ -50,7 +49,7 @@ def handle_client(conn , addr):
             while len(msg) < msg_len: ## Collects all data to msg
                 msg_temp = conn.recv(msg_len-len(msg)) ## ensures all data collected
                 msg += msg_temp
-               
+
             msg = pickle.loads(msg) ## Collected Message Unloaded
             msg_type = type(msg)
 
@@ -60,28 +59,32 @@ def handle_client(conn , addr):
                     connected = False
                 else: 
                     print(f'[CLIENT {addr}] {msg}')
-            elif msg_type == np.ndarray: ## if list turn into and show image
-                #print(np.shape(msg))
 
+            elif msg_type == bytes: ## if list turn into and show image
+                
+                msg = np.frombuffer(msg,np.byte) ## Byte Repair
+                msg = cv2.imdecode(msg, 1)
                 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
                 parameters = aruco.DetectorParameters()
                 detector = aruco.ArucoDetector(aruco_dict,parameters)
                 corners, ids, rejectedImgPoints = detector.detectMarkers(image=msg)
-                print(type(ids))
-                print("\n{}".format(ids))
-                if ids == None:
+
+                if type(ids) == type(None):
                     cv2.imshow("RECIVEDVIDEO", msg)
                 else:
                     for id in ids:
                         print("[DETECED MARKER]: {}\n".format(id))
                     editedFrame = aruco.drawDetectedMarkers(image=msg.copy(),corners=corners,ids=ids)
-                    cv2.imshow("RECIEVEDVIDEO",editedFrame)
+                    cv2.imshow("DETECTED IMAGE",editedFrame)
 
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'): ## if q is pressed disconnect
                     connected = False
+                
     conn.close()
-            
+    cv2.destroyAllWindows()
+    print(f"[SERVER] CLIENT {addr} DISCONNECTED")
+
 start()
 
             
