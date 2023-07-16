@@ -30,10 +30,24 @@ def send_servo_signal(message:str):
     match messageList[1]:
         case "x":
             servo_x_angle += angle_change
-            servo_x.write(servo_x_angle)
+            try:
+                servo_x.write(servo_x_angle)
+            except:
+                if angle_change < 0:
+                    servo_x.write(0)
+                else:
+                    servo_x.write(180)
         case "y":
             servo_y_angle += angle_change
             servo_y.write(servo_y_angle)
+            try:
+                servo_y.write(servo_x_angle)
+            except:
+                if angle_change < 0:
+                    servo_y.write(0)
+                else:
+                    servo_y.write(180)
+            
     print("Message recieved")
     return
 
@@ -44,11 +58,7 @@ def handle_client(connection:socket.socket,address):
         if messageLength:
             message = connection.recv(int(messageLength)).decode("utf-8")            
             print("\nSending {} to send_servo_signal()".format(message))
-            try:
-                send_servo_signal(message)
-            except:
-                print("\n[Can't go that way]\n")
-
+            send_servo_signal(message)
             if message == "END":
                 connected = False
 
