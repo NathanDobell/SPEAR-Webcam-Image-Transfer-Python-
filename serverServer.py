@@ -39,9 +39,8 @@ def send_servo_signal(message:str):
                     servo_x.write(180)
         case "y":
             servo_y_angle += angle_change
-            servo_y.write(servo_y_angle)
             try:
-                servo_y.write(servo_x_angle)
+                servo_y.write(servo_y_angle)
             except:
                 if angle_change < 0:
                     servo_y.write(0)
