@@ -30,13 +30,12 @@ def start():
             message = ""
 
         if message != "":    
-            print("Message:{}\n".format(message))
+            print("Message:{} [SENT]\n".format(message))
             message = message.encode('utf-8')
             messageLength = str(len(message)).encode('utf-8')
             messageLength += b' ' * (64 - len(messageLength))
             client.send(messageLength)
             client.send(message)
-            print("[MESSAGE SENT]")
 
 start()
 
