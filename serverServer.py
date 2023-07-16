@@ -55,11 +55,12 @@ def handle_client(connection:socket.socket,address):
     while connected:
         messageLength = connection.recv(64).decode("utf-8")
         if messageLength:
-            message = connection.recv(int(messageLength)).decode("utf-8")            
-            print("\nSending {} to send_servo_signal()".format(message))
-            send_servo_signal(message)
+            message = connection.recv(int(messageLength)).decode("utf-8")
             if message == "END":
                 connected = False
+            else:
+                print("\nSending {} to send_servo_signal()".format(message))
+                send_servo_signal(message)
 
 
     print("[ENDING CONNECTION]: {}".format(address))
