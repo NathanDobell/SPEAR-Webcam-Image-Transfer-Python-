@@ -19,6 +19,9 @@ def reset_servos():
     servo_y.write(servo_y_angle)
 
 def send_servo_signal(message:str):
+    global servo_x_angle
+    global servo_y_angle
+
     messageList = message.split("/") #splits on the "/" to give the angle change in [0] and in axis in [1]
     angle_change = int(messageList[0])
     print("[X-ANGLE]: {}".format(servo_x_angle))
