@@ -35,8 +35,10 @@ def send_servo_signal(message:str):
             except:
                 if servo_x_angle < 0:
                     servo_x.write(0)
+                    servo_x_angle = 0
                 else:
                     servo_x.write(180)
+                    servo_x_angle = 180
         case "y":
             servo_y_angle += angle_change
             try:
@@ -44,8 +46,10 @@ def send_servo_signal(message:str):
             except:
                 if servo_y_angle < 0:
                     servo_y.write(0)
+                    servo_y_angle = 0
                 else:
                     servo_y.write(180)
+                    servo_y_angle = 180
             
     print("Message recieved")
     return

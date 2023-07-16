@@ -7,7 +7,7 @@ SERVER = "172.20.10.2"
 ADDR = (SERVER,PORT)
 
 
-def start():
+def start(speed:int):
     client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     client.connect(ADDR)
 
@@ -21,13 +21,13 @@ def start():
             message = "END"
             connected = False
         elif input == "right":
-            message = "-5/x"
+            message = "-{}/x".format(speed)
         elif input == "left":
-            message = "+5/x"
+            message = "+{}/x".format(speed)
         elif input == "up":
-            message = "+5/y"
+            message = "+{}/y".format(speed)
         elif input == "down":
-            message = "-5/y"
+            message = "-{}/y".format(speed)
         else:
             message = ""
 
@@ -40,7 +40,7 @@ def start():
             client.send(message)
 
 
-start()
+start(speed=2.5) #speed should be in angle measures
 
 
 
