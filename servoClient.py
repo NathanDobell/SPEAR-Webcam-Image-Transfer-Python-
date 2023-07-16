@@ -1,5 +1,6 @@
 import socket
 import keyboard
+import random
 
 PORT = 5050
 SERVER = "172.20.10.2"
@@ -13,19 +14,20 @@ def start():
     connected = True
     print("\nListening for input:")
     message="start"
+    #using to detect duplicate messages
     while connected:
         input = keyboard.read_key()
         if input=="k":
             message = "END"
             connected = False
         elif input == "right":
-            message = "-45/x"
+            message = "-5/x"
         elif input == "left":
-            message = "+45/x"
+            message = "+5/x"
         elif input == "up":
-            message = "+45/y"
+            message = "+5/y"
         elif input == "down":
-            message = "-45/y"
+            message = "-5/y"
         else:
             message = ""
 
@@ -37,6 +39,8 @@ def start():
             client.send(messageLength)
             client.send(message)
 
+
 start()
+
 
 
