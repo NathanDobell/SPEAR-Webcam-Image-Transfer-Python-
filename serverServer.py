@@ -44,7 +44,11 @@ def handle_client(connection:socket.socket,address):
         if messageLength:
             message = connection.recv(int(messageLength)).decode("utf-8")            
             print("\nSending {} to send_servo_signal()".format(message))
-            send_servo_signal(message)
+            try:
+                send_servo_signal(message)
+            except:
+                print("\n[Can't go that way]\n")
+
             if message == "END":
                 connected = False
 
